@@ -41,6 +41,21 @@ const schemas = {
     phone: Joi.string(),
   }).min(1),
 };
+
+const { Schema } = mongoose;
+
+const contactSchemas = {
+  addContact: new Schema({
+    name: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String, required: true, unique: true },
+  }),
+  updateContact: new Schema({
+    name: { type: String, unique: true },
+    email: { type: String, unique: true },
+    phone: { type: String, unique: true },
+  }),
+};
 // Get all contacts
 router.get("/", async (req, res, next) => {
   try {
