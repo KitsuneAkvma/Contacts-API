@@ -9,6 +9,22 @@ import {
   addContact,
   updateContact,
 } from "../../models/contacts.js";
+import mongoose from "mongoose";
+
+mongoose
+  .connect(
+    "mongodb+srv://akvma:cKE!%5EGjmpxK!RU8PY61Y@cluster0.p9kxw5t.mongodb.net/test",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
+  .then(() => {
+    console.log("Connected to MongoDB successfully!");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+  });
 
 const router = express.Router();
 const upload = multer();
@@ -23,6 +39,21 @@ const schemas = {
     email: Joi.string().email(),
     phone: Joi.string(),
   }).min(1),
+};
+
+const { Schema } = mongoose;
+
+const contactSchemas = {
+  addContact: new Schema({
+    name: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String, required: true, unique: true },
+  }),
+  updateContact: new Schema({
+    name: { type: String, unique: true },
+    email: { type: String, unique: true },
+    phone: { type: String, unique: true },
+  }),
 };
 // Get all contacts
 router.get("/", async (req, res, next) => {
