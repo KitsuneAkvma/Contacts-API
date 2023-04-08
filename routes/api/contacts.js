@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import Joi from "joi";
+import dotenv from "dotenv";
 
 import {
   listContacts,
@@ -9,6 +10,22 @@ import {
   addContact,
   updateContact,
 } from "../../models/contacts.js";
+<<<<<<< Updated upstream
+=======
+import mongoose from "mongoose";
+dotenv.config();
+mongoose
+  .connect(process.env.DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB successfully!");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+  });
+>>>>>>> Stashed changes
 
 const router = express.Router();
 const upload = multer();
@@ -29,7 +46,7 @@ router.get("/", async (req, res, next) => {
   try {
     const contacts = await listContacts();
 
-    res.status(contacts.statusCcode).json(contacts);
+    res.status(contacts.statusCode).json(contacts);
   } catch (error) {
     next(error);
   }
