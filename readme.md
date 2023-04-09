@@ -32,7 +32,15 @@ This API is running on `localhost:3000/api/contacts`.
   - `phone`: string
 - Description: Updates a contact. At least one data field must be provided.
 
+### Change "Favorite" status
+- Method: PATCH
+- Endpoint: /:contactID
+- Query Parameters:
+  - `favorite`: boolean
+- Description: Updates a favorite status. 
+
 #### Remove Contact
 - Method: DELETE
 - Endpoint: `/:contactID`
 - Description: Removes a contact by ID.
+
