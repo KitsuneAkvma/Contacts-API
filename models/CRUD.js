@@ -1,6 +1,5 @@
 import path from "path";
-import fs from "fs/promises";
-import { v4 as uuidv4 } from "uuid";
+
 import { Contact } from "./models.js";
 
 const filePath = path.normalize("./models/contacts.json");

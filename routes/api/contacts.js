@@ -1,7 +1,5 @@
 import express from "express";
 import multer from "multer";
-import Joi from "joi";
-import mongoose from "mongoose";
 
 import {
   listContacts,
