@@ -1,6 +1,6 @@
 import path from "path";
 
-import { Contact } from "./models.js";
+import { Contact } from "../models/models.js";
 
 const filePath = path.normalize("./models/contacts.json");
 
@@ -111,6 +111,14 @@ const addContact = async (body) => {
 
 const updateContact = async (contactId, body) => {
   try {
+    if (Object.keys(body).length === 0) {
+      return {
+        statusCode: 400,
+        message: "Request body is empty",
+        yourRequest: body,
+      };
+    }
+
     const contactToEdit = await Contact.findById(contactId);
 
     if (!contactToEdit) {
@@ -124,11 +132,11 @@ const updateContact = async (contactId, body) => {
     const editableFields = ["name", "email", "phone"];
     const updatedContact = { ...contactToEdit._doc };
 
-    for (const field of editableFields) {
-      if (body[field]) {
-        updatedContact[field] = body[field];
-      }
+    for (const key in body) {
+      const value = body[key];
+      updatedContact[key.toLowerCase()] = value;
     }
+    console.log({ body, updatedContact });
 
     await Contact.findByIdAndUpdate(contactId, updatedContact, {
       runValidators: true,

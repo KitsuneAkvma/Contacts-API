@@ -8,7 +8,7 @@ import {
   addContact,
   updateContact,
   switchFavorite,
-} from "../../models/CRUD.js";
+} from "../../services/contacts.js";
 
 const router = express.Router();
 const upload = multer();
@@ -40,7 +40,7 @@ router.post("/", upload.none(), async (req, res, next) => {
   try {
     let newContact;
     // flexibility for using raw JSON object and form-data
-    if (req.headers["content-type"].startsWith("multipart/form-data")) {
+    if (req.headers["content-type"]?.startsWith("multipart/form-data")) {
       newContact = await addContact(req.body);
     } else {
       newContact = await addContact(req.body);
@@ -59,7 +59,7 @@ router.put("/:contactId", upload.none(), async (req, res, next) => {
   try {
     const contactId = req.params.contactId;
     const providedData = req.body;
-
+    
     let updatedContact;
     if (req.headers["content-type"]?.startsWith("multipart/form-data")) {
       updatedContact = await updateContact(contactId, providedData);
