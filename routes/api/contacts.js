@@ -19,6 +19,7 @@ router.get("/", async (req, res, next) => {
     const contacts = await listContacts();
 
     res.status(contacts.statusCode).json(contacts);
+    res.status(contacts.statusCode).json(contacts);
   } catch (error) {
     next(error);
   }
