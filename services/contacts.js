@@ -1,8 +1,5 @@
-import path from "path";
-
 import { Contact } from "../models/models.js";
 
-const filePath = path.normalize("./models/contacts.json");
 
 const listContacts = async () => {
   try {
@@ -129,7 +126,6 @@ const updateContact = async (contactId, body) => {
       };
     }
 
-    const editableFields = ["name", "email", "phone"];
     const updatedContact = { ...contactToEdit._doc };
 
     for (const key in body) {
