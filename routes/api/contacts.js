@@ -1,7 +1,4 @@
 import express from "express";
-import multer from "multer";
-import Joi from "joi";
-import dotenv from "dotenv";
 
 import {
   listContacts,
@@ -9,53 +6,11 @@ import {
   removeContact,
   addContact,
   updateContact,
-} from "../../models/contacts.js";
-<<<<<<< Updated upstream
-=======
-import mongoose from "mongoose";
-dotenv.config();
-mongoose
-  .connect(process.env.DB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connected to MongoDB successfully!");
-  })
-  .catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
-  });
->>>>>>> Stashed changes
+  switchFavorite,
+} from "../../services/contacts.js";
 
 const router = express.Router();
-const upload = multer();
-const schemas = {
-  addContact: Joi.object({
-    name: Joi.string().required(),
-    email: Joi.string().email().required(),
-    phone: Joi.string().required(),
-  }),
-  updateContact: Joi.object({
-    name: Joi.string(),
-    email: Joi.string().email(),
-    phone: Joi.string(),
-  }).min(1),
-};
 
-const { Schema } = mongoose;
-
-const contactSchemas = {
-  addContact: new Schema({
-    name: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true, unique: true },
-  }),
-  updateContact: new Schema({
-    name: { type: String, unique: true },
-    email: { type: String, unique: true },
-    phone: { type: String, unique: true },
-  }),
-};
 // Get all contacts
 router.get("/", async (req, res, next) => {
   try {
@@ -79,20 +34,11 @@ router.get("/:contactId", async (req, res, next) => {
 });
 
 // Create a new contact
-router.post("/", upload.none(), async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     let newContact;
-    const { error } = schemas.addContact.validate(req.body);
-    if (error) {
-      res.status(400).json({ error: error.details[0].message });
-      return;
-    }
-    // flexibility for using raw JSON object and form-data
-    if (req.headers["content-type"].startsWith("multipart/form-data")) {
-      newContact = await addContact(req.body);
-    } else {
-      newContact = await addContact(req.body);
-    }
+
+    newContact = await addContact(req.body);
 
     newContact === null && res.status(400).json({ error: "Invalid request" });
 
@@ -103,22 +49,31 @@ router.post("/", upload.none(), async (req, res, next) => {
 });
 
 // Update a contact
-router.put("/:contactId", upload.none(), async (req, res, next) => {
+router.put("/:contactId", async (req, res, next) => {
   try {
     const contactId = req.params.contactId;
     const providedData = req.body;
 
-    const { error } = schemas.updateContact.validate(req.body);
-    if (error) {
-      res.status(400).json({ error: error.details[0].message });
-      return;
-    }
     let updatedContact;
-    if (req.headers["content-type"]?.startsWith("multipart/form-data")) {
-      updatedContact = await updateContact(contactId, providedData);
-    } else {
-      updatedContact = await updateContact(contactId, providedData);
-    }
+
+    updatedContact = await updateContact(contactId, providedData);
+
+    res.status(updatedContact.statusCode).json(updatedContact);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Update favorite status of contact
+router.patch("/:contactId", async (req, res, next) => {
+  try {
+    const contactId = req.params.contactId;
+    const providedData = req.body;
+
+    let updatedContact;
+
+    updatedContact = await switchFavorite(contactId, providedData);
+
     res.status(updatedContact.statusCode).json(updatedContact);
   } catch (error) {
     next(error);
