@@ -36,9 +36,7 @@ router.get("/:contactId", async (req, res, next) => {
 // Create a new contact
 router.post("/", async (req, res, next) => {
   try {
-    let newContact;
-
-    newContact = await addContact(req.body);
+    const newContact = await addContact(req.body);
 
     newContact === null && res.status(400).json({ error: "Invalid request" });
 

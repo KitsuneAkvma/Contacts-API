@@ -4,6 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 
 import contactsRouter from "./routes/api/contacts.js";
+import usersRouter from "./routes/api/users.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(json());
 app.use(bodyParser.json());
 
+app.use("/api/users", usersRouter);
 app.use("/api/contacts", contactsRouter);
 
 app.use((req, res) => {

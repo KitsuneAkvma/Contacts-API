@@ -24,8 +24,43 @@ const contactSchema = new Schema({
     ],
   },
   favorite: { type: Boolean, default: false },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "user",
+  },
+});
+
+const userSchema = new Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
+    lowercase: true,
+    trim: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    match: [
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
+      "Password must have at least 6 characters, including uppercase, lowercase and number",
+    ],
+    trim: true,
+  },
+
+  subscription: {
+    type: String,
+    enum: ["starter", "pro", "business"],
+    default: "starter",
+  },
+  token: {
+    type: String,
+    default: null,
+  },
 });
 
 const Contact = mongoose.model("Contact", contactSchema);
+const User = mongoose.model("User", userSchema);
 
-export { Contact };
+export { Contact, User };
