@@ -4,20 +4,19 @@ const { Schema } = mongoose;
 
 const contactSchema = new Schema({
   name: {
-    type: [String, "Name must be a string"],
+    type: String,
     required: [true, "Name is required"],
-    unique: [true, "Contact with this name already exists"],
   },
   email: {
-    type: [String, "Email must be a string"],
+    type: String,
     required: [true, "Email is required"],
-    unique: [true, "Contact with this email already exists"],
+
     match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
   },
   phone: {
-    type: [String, "Phone must be a string"],
+    type: String,
     required: [true, "Phone is required"],
-    unique: [true, "Contact with this phone already exists"],
+
     match: [
       /^(\+\d{1,3})?[\s.-]?\(?(\d{3})\)?[\s.-]?(\d{3})[\s.-]?(\d{4})$/,
       "Invalid phone format",
@@ -27,8 +26,10 @@ const contactSchema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
     ref: "user",
+    required: true,
   },
 });
+contactSchema.index({ name: 1, owner: 1 }, { unique: true });
 
 const userSchema = new Schema({
   email: {
@@ -42,10 +43,6 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
-    match: [
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
-      "Password must have at least 6 characters, including uppercase, lowercase and number",
-    ],
     trim: true,
   },
 

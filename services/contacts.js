@@ -1,9 +1,12 @@
+import { mongo } from "mongoose";
 import { Contact } from "../models/models.js";
+import mongoose from "mongoose";
 
-
-const listContacts = async () => {
+const listContacts = async (req) => {
   try {
-    const allContacts = await Contact.find();
+    const user = req.user;
+
+    const allContacts = await Contact.find({ owner: user._id });
     if (allContacts) {
       return {
         statusCode: 200,
@@ -34,9 +37,13 @@ const listContacts = async () => {
   }
 };
 
-const getContactById = async (contactId) => {
+const getContactById = async (contactId, userId) => {
   try {
-    const contact = await Contact.findById(contactId);
+    console.log(userId);
+    const contact = await Contact.findOne({
+      _id: contactId,
+      owner: userId,
+    });
 
     if (contact) {
       return {
@@ -62,13 +69,16 @@ const getContactById = async (contactId) => {
   }
 };
 
-const addContact = async (body) => {
+const addContact = async (req) => {
   try {
-    const { name, email, phone } = body;
+    const { name, email, phone } = req.body;
 
     // Check if a contact with the same name, email, or phone number already exists
     const existingContact = await Contact.findOne({
-      $or: [{ name }, { email }, { phone }],
+      $and: [
+        { $or: [{ name }, { email }, { phone }] },
+        { owner: new mongoose.Types.ObjectId(req.user._id) },
+      ],
     });
 
     if (existingContact) {
@@ -76,7 +86,7 @@ const addContact = async (body) => {
         statusCode: 409,
         message:
           "A contact with this name, email, or phone number already exists",
-        yourRequest: body,
+        yourRequest: req.body,
         conflictingContact: existingContact,
       };
     }
@@ -85,6 +95,7 @@ const addContact = async (body) => {
       name,
       email,
       phone,
+      owner: new mongoose.Types.ObjectId(req.user._id),
     });
 
     await newContact.save();
@@ -92,7 +103,7 @@ const addContact = async (body) => {
     return {
       statusCode: 201,
       message: "Successfully added contact!",
-      yourRequest: body,
+      yourRequest: req.body,
       newContact: newContact,
     };
   } catch (error) {

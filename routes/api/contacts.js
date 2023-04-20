@@ -8,46 +8,50 @@ import {
   updateContact,
   switchFavorite,
 } from "../../services/contacts.js";
+import { authentication } from "../../services/middleware.js";
 
 const router = express.Router();
 
 // Get all contacts
-router.get("/", async (req, res, next) => {
+router.get("/", authentication, async (req, res, next) => {
   try {
-    const contacts = await listContacts();
+    const contacts = await listContacts(req);
 
     res.status(contacts.statusCode).json(contacts);
   } catch (error) {
+    res.status(error.statusCode).json(error);
     next(error);
   }
 });
 
 // Get contact by ID
-router.get("/:contactId", async (req, res, next) => {
+router.get("/:contactId", authentication, async (req, res, next) => {
   try {
-    const contact = await getContactById(req.params.contactId);
+    const contact = await getContactById(req.params.contactId, req.user._id);
 
     res.status(contact.statusCode).json(contact);
   } catch (error) {
+    res.status(error.statusCode).json(error);
     next(error);
   }
 });
 
 // Create a new contact
-router.post("/", async (req, res, next) => {
+router.post("/", authentication, async (req, res, next) => {
   try {
-    const newContact = await addContact(req.body);
+    const newContact = await addContact(req);
 
     newContact === null && res.status(400).json({ error: "Invalid request" });
 
     res.status(newContact.statusCode).json(newContact);
   } catch (error) {
+    res.status(error.statusCode).json(error);
     next(error);
   }
 });
 
 // Update a contact
-router.put("/:contactId", async (req, res, next) => {
+router.put("/:contactId", authentication, async (req, res, next) => {
   try {
     const contactId = req.params.contactId;
     const providedData = req.body;
@@ -58,12 +62,13 @@ router.put("/:contactId", async (req, res, next) => {
 
     res.status(updatedContact.statusCode).json(updatedContact);
   } catch (error) {
+    res.status(error.statusCode).json(error);
     next(error);
   }
 });
 
 // Update favorite status of contact
-router.patch("/:contactId", async (req, res, next) => {
+router.patch("/:contactId", authentication, async (req, res, next) => {
   try {
     const contactId = req.params.contactId;
     const providedData = req.body;
@@ -74,16 +79,18 @@ router.patch("/:contactId", async (req, res, next) => {
 
     res.status(updatedContact.statusCode).json(updatedContact);
   } catch (error) {
+    res.status(error.statusCode).json(error);
     next(error);
   }
 });
 
 // Delete a contact
-router.delete("/:contactId", async (req, res, next) => {
+router.delete("/:contactId", authentication, async (req, res, next) => {
   try {
     const removedContact = await removeContact(req.params.contactId);
     res.status(removedContact.statusCode).json(removedContact);
   } catch (error) {
+    res.status(error.statusCode).json(error);
     next(error);
   }
 });

@@ -1,0 +1,60 @@
+
+
+### POST /api/auth/signup
+POST http://localhost:3000/api/users/signup
+Content-Type: application/json
+
+{
+  "email": "johndoe@example.com",
+  "password": "Password123"
+}
+
+
+
+### POST /api/auth/login
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "johndoe@example.com",
+  "password": "Password123"
+}
+
+
+### GET /api/contacts
+GET http://localhost:3000/api/contacts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODE5NTc4NTQsImV4cCI6MTY4MTk2MTQ1NH0.sI4fFHNc1rT_xWF02jTCArRkz2DwlmUEDpAJZqAdJEo
+
+### GET /api/contacts/:contactId
+GET http://localhost:3000/api/contacts/64409bd95088eecf605c9974
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODE5NTc4NTQsImV4cCI6MTY4MTk2MTQ1NH0.sI4fFHNc1rT_xWF02jTCArRkz2DwlmUEDpAJZqAdJEo
+### POST /api/contacts
+POST http://localhost:3000/api/contacts
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODE5NTc4NTQsImV4cCI6MTY4MTk2MTQ1NH0.sI4fFHNc1rT_xWF02jTCArRkz2DwlmUEDpAJZqAdJEo
+
+{
+  "name": "Dupas Ty",
+  "email": "bobas@o2.pl",
+  "phone": "363-623-9741"
+}
+
+### PUT /api/contacts/:contactId
+PUT http://localhost:3000/api/contacts/123
+Content-Type: application/json
+
+{
+  "name": "Jane Smith"
+}
+
+### PATCH /api/contacts/:contactId
+PATCH http://localhost:3000/api/contacts/123
+Content-Type: application/json
+
+{
+  "favorite": true
+}
+
+### DELETE /api/contacts/:contactId
+DELETE http://localhost:3000/api/contacts/123
