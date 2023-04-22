@@ -1,17 +1,38 @@
-import { mongo } from "mongoose";
 import { Contact } from "../models/models.js";
 import mongoose from "mongoose";
 
 const listContacts = async (req) => {
   try {
     const user = req.user;
+    const { page = 1, limit = 20 } = req.query;
+    const filters = {};
+    for (const [key, value] of Object.entries(req.query)) {
+      if (key !== "page" && key !== "limit") {
+        filters[key] = value;
+      }
+    }
 
-    const allContacts = await Contact.find({ owner: user._id });
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const allContacts = await Contact.find({ owner: user._id, ...filters });
+
+    const pageContacts = allContacts.slice(startIndex, endIndex);
+    const totalContacts = allContacts.length;
+    const totalPages = Math.ceil(allContacts.length / limit);
+
     if (allContacts) {
       return {
         statusCode: 200,
         message: "Successfully found contacts list!",
-        data: allContacts,
+        data: {
+          totalContacts,
+          page: Number(page),
+          perPage: Number(limit),
+          totalPages,
+          filters,
+          contacts: pageContacts,
+        },
       };
     } else {
       return {
@@ -39,7 +60,7 @@ const listContacts = async (req) => {
 
 const getContactById = async (contactId, userId) => {
   try {
-    console.log(userId);
+
     const contact = await Contact.findOne({
       _id: contactId,
       owner: userId,
@@ -104,15 +125,15 @@ const addContact = async (req) => {
       statusCode: 201,
       message: "Successfully added contact!",
       yourRequest: req.body,
-      newContact: newContact,
+      newContact,
     };
   } catch (error) {
-    console.log("An error occurred:", error);
+
     return {
       statusCode: 500,
       message: "Internal server error",
       error: error.message,
-      yourRequest: body,
+      yourRequest: req.body,
     };
   }
 };
@@ -143,7 +164,7 @@ const updateContact = async (contactId, body) => {
       const value = body[key];
       updatedContact[key.toLowerCase()] = value;
     }
-    console.log({ body, updatedContact });
+
 
     await Contact.findByIdAndUpdate(contactId, updatedContact, {
       runValidators: true,
@@ -153,7 +174,7 @@ const updateContact = async (contactId, body) => {
     return {
       statusCode: 200,
       message: "Successfully updated contact!",
-      updatedContact: updatedContact,
+      updatedContact,
     };
   } catch (error) {
     console.error(error);
@@ -194,17 +215,17 @@ const switchFavorite = async (contactId, body) => {
       return {
         statusCode: 200,
         message: "Successfully added contact to favorites",
-        updatedContact: updatedContact,
+        updatedContact,
       };
     } else {
       return {
         statusCode: 200,
         message: "Successfully removed contact from favorites",
-        updatedContact: updatedContact,
+        updatedContact,
       };
     }
   } catch (error) {
-    console.log(error);
+
     return {
       statusCode: 500,
       message: "Internal server error",
@@ -216,6 +237,9 @@ const switchFavorite = async (contactId, body) => {
 const removeContact = async (contactId) => {
   try {
     const contactToRemove = await Contact.findByIdAndDelete(contactId);
+    if (!contactToRemove) {
+      return { statusCode: 404, message: "Contact not found" };
+    }
     return {
       statusCode: 200,
       message: "Successfully removed contact!",
@@ -225,9 +249,9 @@ const removeContact = async (contactId) => {
     console.error(error);
     return {
       statusCode: 500,
-      message: "Internal server error",
+      message: "An error occurred!",
       error: error.message,
-      yourRequest: body,
+      yourRequest: { contactId },
     };
   }
 };

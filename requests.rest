@@ -1,6 +1,6 @@
 
 
-### POST /api/auth/signup
+### POST /api/users/signup
 POST http://localhost:3000/api/users/signup
 Content-Type: application/json
 
@@ -11,7 +11,7 @@ Content-Type: application/json
 
 
 
-### POST /api/auth/login
+### POST /api/users/login
 POST http://localhost:3000/api/users/login
 Content-Type: application/json
 
@@ -20,41 +20,69 @@ Content-Type: application/json
   "password": "Password123"
 }
 
+#  { 
+#   "email": "juanpaulos@gmail.com",
+#   "password": "Dupa123"
+#   }
+
+### POST /api/users/logout
+POST http://localhost:3000/api/users/logout
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODIwODk5MzEsImV4cCI6MTY4MjA5MzUzMX0.K3tE2OKoQzyf7OgRhjGMQXvBf02lZO0XE1hjEDTTlkM
+
+### GET /api/users/current
+GET http://localhost:3000/api/users/current
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODIxMTEzOTEsImV4cCI6MTY4MjExNDk5MX0.38-MxOJMmx6ScjOUQJ7cSVaSMC1v-bhPIxWJUq2BUw4
+
+### PATCH /api/users
+PATCH http://localhost:3000/api/users
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODIxMTEzOTEsImV4cCI6MTY4MjExNDk5MX0.38-MxOJMmx6ScjOUQJ7cSVaSMC1v-bhPIxWJUq2BUw4
+
+{"subscription":""}
+###-----------------------
 
 ### GET /api/contacts
 GET http://localhost:3000/api/contacts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODE5NTc4NTQsImV4cCI6MTY4MTk2MTQ1NH0.sI4fFHNc1rT_xWF02jTCArRkz2DwlmUEDpAJZqAdJEo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODIxMTEzOTEsImV4cCI6MTY4MjExNDk5MX0.38-MxOJMmx6ScjOUQJ7cSVaSMC1v-bhPIxWJUq2BUw4
 
 ### GET /api/contacts/:contactId
-GET http://localhost:3000/api/contacts/64409bd95088eecf605c9974
+GET http://localhost:3000/api/contacts/6442a8087b5e5ae78331ba81
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODE5NTc4NTQsImV4cCI6MTY4MTk2MTQ1NH0.sI4fFHNc1rT_xWF02jTCArRkz2DwlmUEDpAJZqAdJEo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODIwODk5MzEsImV4cCI6MTY4MjA5MzUzMX0.K3tE2OKoQzyf7OgRhjGMQXvBf02lZO0XE1hjEDTTlkM
 ### POST /api/contacts
 POST http://localhost:3000/api/contacts
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODE5NTc4NTQsImV4cCI6MTY4MTk2MTQ1NH0.sI4fFHNc1rT_xWF02jTCArRkz2DwlmUEDpAJZqAdJEo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODIwODk5MzEsImV4cCI6MTY4MjA5MzUzMX0.K3tE2OKoQzyf7OgRhjGMQXvBf02lZO0XE1hjEDTTlkM
 
 {
-  "name": "Dupas Ty",
-  "email": "bobas@o2.pl",
-  "phone": "363-623-9741"
+  "name": "Cholerny pajac",
+  "email": "brrr@wp.pl",
+  "phone": "(837) 019-8823"
 }
 
 ### PUT /api/contacts/:contactId
-PUT http://localhost:3000/api/contacts/123
+PUT http://localhost:3000/api/contacts/6442a8087b5e5ae78331ba81
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODIwODk5MzEsImV4cCI6MTY4MjA5MzUzMX0.K3tE2OKoQzyf7OgRhjGMQXvBf02lZO0XE1hjEDTTlkM
 
 {
   "name": "Jane Smith"
 }
 
 ### PATCH /api/contacts/:contactId
-PATCH http://localhost:3000/api/contacts/123
+PATCH http://localhost:3000/api/contacts/6442a8087b5e5ae78331ba81
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODIwODk5MzEsImV4cCI6MTY4MjA5MzUzMX0.K3tE2OKoQzyf7OgRhjGMQXvBf02lZO0XE1hjEDTTlkM
 
 {
-  "favorite": true
+  "favorite": false
 }
 
 ### DELETE /api/contacts/:contactId
-DELETE http://localhost:3000/api/contacts/123
+DELETE http://localhost:3000/api/contacts/6442a8087b5e5ae78331ba81
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQwNmVmOGJlNGVmYmUwNTA1NWI0MGMiLCJpYXQiOjE2ODIwODk5MzEsImV4cCI6MTY4MjA5MzUzMX0.K3tE2OKoQzyf7OgRhjGMQXvBf02lZO0XE1hjEDTTlkM
+
+###-----------------------

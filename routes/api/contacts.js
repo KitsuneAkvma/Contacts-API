@@ -56,9 +56,7 @@ router.put("/:contactId", authentication, async (req, res, next) => {
     const contactId = req.params.contactId;
     const providedData = req.body;
 
-    let updatedContact;
-
-    updatedContact = await updateContact(contactId, providedData);
+    const updatedContact = await updateContact(contactId, providedData);
 
     res.status(updatedContact.statusCode).json(updatedContact);
   } catch (error) {
@@ -73,9 +71,7 @@ router.patch("/:contactId", authentication, async (req, res, next) => {
     const contactId = req.params.contactId;
     const providedData = req.body;
 
-    let updatedContact;
-
-    updatedContact = await switchFavorite(contactId, providedData);
+    const updatedContact = await switchFavorite(contactId, providedData);
 
     res.status(updatedContact.statusCode).json(updatedContact);
   } catch (error) {

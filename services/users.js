@@ -6,7 +6,6 @@ import { User } from "../models/models.js";
 const signUp = async (body) => {
   try {
     const { email, password } = body;
-    console.log({ email, password });
 
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -63,13 +62,22 @@ const login = async (body) => {
     }
     const JWT_SECRET = process.env.JWT_SECRET;
     const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "7d",
     });
-    await User.findByIdAndUpdate(user._id, token, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      { token },
+      { new: true }
+    );
+
     return {
       statusCode: 202,
       message: "Successfully logged in",
-      user: { email, subscription: user.subscription, token },
+      user: {
+        email: updatedUser.email,
+        subscription: user.subscription,
+        token: updatedUser.token,
+      },
     };
   } catch (error) {
     return {
@@ -80,4 +88,50 @@ const login = async (body) => {
   }
 };
 
-export { signUp, login };
+const logout = async (user, token) => {
+  try {
+    const userToLogout = await User.findOneAndUpdate(
+      { _id: user._id, token },
+      { token: "" },
+      { new: true }
+    );
+
+    if (!userToLogout) {
+      return {
+        statusCode: 401,
+        message: "Not authorized",
+      };
+    }
+    return { statusCode: 204, message: "Successfully logged out" };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      message: "Error logging out",
+      error: error.message,
+    };
+  }
+};
+
+const updateSubscription = async (user, subscription) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(user._id, subscription, {
+      new: true,
+    });
+    if (!updatedUser) return { statusCode: 401, message: "Not authorized" };
+    return {
+      statusCode: 202,
+      message: "Successfully updated subscription",
+      user: {
+        email: updatedUser.email,
+        subscription: updatedUser.subscription,
+      },
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      message: "Error updating subscription",
+      error: error.message,
+    };
+  }
+};
+export { signUp, login, logout, updateSubscription };

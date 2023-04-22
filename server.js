@@ -9,7 +9,7 @@ app.listen(PORT, () => {
   console.log(`Server running. Use our API on port: ${PORT}`);
 });
 
-await mongoose
+mongoose
   .connect(process.env.DB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
