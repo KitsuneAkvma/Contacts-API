@@ -60,7 +60,6 @@ const listContacts = async (req) => {
 
 const getContactById = async (contactId, userId) => {
   try {
-
     const contact = await Contact.findOne({
       _id: contactId,
       owner: userId,
@@ -128,7 +127,6 @@ const addContact = async (req) => {
       newContact,
     };
   } catch (error) {
-
     return {
       statusCode: 500,
       message: "Internal server error",
@@ -164,7 +162,6 @@ const updateContact = async (contactId, body) => {
       const value = body[key];
       updatedContact[key.toLowerCase()] = value;
     }
-
 
     await Contact.findByIdAndUpdate(contactId, updatedContact, {
       runValidators: true,
@@ -225,7 +222,6 @@ const switchFavorite = async (contactId, body) => {
       };
     }
   } catch (error) {
-
     return {
       statusCode: 500,
       message: "Internal server error",

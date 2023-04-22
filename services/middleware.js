@@ -9,7 +9,7 @@ const authentication = async (req, res, next) => {
     const token = (authHeader && authHeader.split(" ")[1]) || req.cookies.token;
 
     if (token === undefined || token === null || token === "") {
-      throw new Error("Token not provided");
+      throw new Error();
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -23,7 +23,6 @@ const authentication = async (req, res, next) => {
     req.token = token;
     next();
   } catch (error) {
-
     next({
       statusCode: 401,
       message: error.message || "Unauthorized",

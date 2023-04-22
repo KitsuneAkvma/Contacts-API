@@ -102,7 +102,7 @@ const logout = async (user, token) => {
         message: "Not authorized",
       };
     }
-    return { statusCode: 204, message: "Successfully logged out" };
+    return { statusCode: 200, message: "Successfully logged out" };
   } catch (error) {
     return {
       statusCode: 500,
@@ -114,9 +114,13 @@ const logout = async (user, token) => {
 
 const updateSubscription = async (user, subscription) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(user._id, subscription, {
-      new: true,
-    });
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      { subscription },
+      {
+        new: true,
+      }
+    );
     if (!updatedUser) return { statusCode: 401, message: "Not authorized" };
     return {
       statusCode: 202,
