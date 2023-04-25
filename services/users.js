@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 
 import { User } from "../models/models.js";
 
@@ -27,7 +28,11 @@ const signUp = async (body) => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const newUser = new User({ email, password: passwordHash });
+    const newUser = new User({
+      email,
+      password: passwordHash,
+      avatarURL: gravatar.profile_url(email),
+    });
     await newUser.save();
 
     return {
