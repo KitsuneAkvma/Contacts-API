@@ -1,8 +1,10 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
+import path from "node:path";
 
 import { User } from "../models/models.js";
+import { processAvatar } from "./middleware.js";
 
 const signUp = async (body) => {
   try {
@@ -143,4 +145,29 @@ const updateSubscription = async (user, subscription) => {
     };
   }
 };
-export { signUp, login, logout, updateSubscription };
+
+const updateAvatar = async (user, file) => {
+  try {
+    const avatarPath = path.normalize(`./public/avatars/${file.filename}`);
+    processAvatar(file, avatarPath);
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        avatarURL: avatarPath,
+      },
+      { new: true }
+    );
+    return {
+      statusCode: 202,
+      message: "Successfully updated avatar",
+      avatarURL: avatarPath,
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      message: "Error updating avatar",
+      error: error.message,
+    };
+  }
+};
+export { signUp, login, logout, updateSubscription, updateAvatar };

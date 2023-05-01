@@ -2,10 +2,9 @@ import express, { json } from "express";
 import logger from "morgan";
 import cors from "cors";
 import bodyParser from "body-parser";
-import multer from "multer";
 
-import contactsRouter from "./routes/api/contacts.js";
-import usersRouter from "./routes/api/users.js";
+import contactsRouter from "./src/routes/api/contacts.js";
+import usersRouter from "./src/routes/api/users.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
