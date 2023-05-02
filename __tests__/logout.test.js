@@ -52,23 +52,23 @@ describe("logout route", () => {
   });
 
   it("clears the 'token' cookie if the user is logged in", async () => {
-    // create an agent to simulate a logged in user
+   
     const agent = request.agent(app);
     const response = await agent.post("/api/users/login").send(testUser);
 
-    // get the authorization token from the login response
+   
     const token = response.cookies?.token;
 
-    // make a request to the logout endpoint with the token in the cookie
+    
     const res = await agent
       .post("/api/users/logout")
       .set("Cookie", `token=${token}`)
       .send();
 
-    // check that the response status code is 200
+   
     expect(res.statusCode).toBe(200);
 
-    // check that the 'token' cookie has been cleared
+   
     expect(res.headers["set-cookie"]).toContain(
       "token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
     );
