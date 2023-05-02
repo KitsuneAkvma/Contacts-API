@@ -4,7 +4,7 @@ import gravatar from "gravatar";
 import path from "node:path";
 
 import { User } from "../models/models.js";
-import { processAvatar } from "./middleware.js";
+import { deleteFile, processAvatar } from "./middleware.js";
 
 const signUp = async (body) => {
   try {
@@ -106,7 +106,7 @@ const logout = async (user, token) => {
     if (!userToLogout) {
       return {
         statusCode: 401,
-        message: "Not authorized",
+        message: "Unauthorized",
       };
     }
     return { statusCode: 200, message: "Successfully logged out" };
@@ -150,6 +150,7 @@ const updateAvatar = async (user, file) => {
   try {
     const avatarPath = path.normalize(`./public/avatars/${file.filename}`);
     processAvatar(file, avatarPath);
+    const previousAvatarURL = user.avatarURL;
     await User.findByIdAndUpdate(
       user._id,
       {
@@ -157,6 +158,9 @@ const updateAvatar = async (user, file) => {
       },
       { new: true }
     );
+    if (previousAvatarURL) {
+      deleteFile(previousAvatarURL);
+    }
     return {
       statusCode: 202,
       message: "Successfully updated avatar",

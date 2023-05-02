@@ -46,7 +46,7 @@ router.post("/logout", authentication, async (req, res, next) => {
   try {
     const user = req.user;
     const token = req.token;
-    !token && res.status(401).json({ message: "Unauthorized" });
+    !token && res.status(401).send({ message: "Unauthorized" });
     const authorization = await logout(user, token);
 
     req.cookies?.token && res.clearCookie("token");
@@ -109,3 +109,4 @@ router.patch(
 );
 
 export default router;
+

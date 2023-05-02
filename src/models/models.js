@@ -68,3 +68,4 @@ const Contact = mongoose.model("Contact", contactSchema);
 const User = mongoose.model("User", userSchema);
 
 export { Contact, User };
+

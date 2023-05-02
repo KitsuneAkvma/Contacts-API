@@ -153,6 +153,51 @@ Updates the current user's subscription. The request body should be a JSON objec
 
 - `subscription` (required): The new subscription level for the user. Valid values are `"starter"`, `"pro"`, and `"business"`.
 
+#### `PATCH /users/avatars`
+
+Updates the current user's avatar. This endpoint requires authentication.
+
+##### Request Body
+
+The request body should be a `multipart/form-data` containing the following field:
+
+- `avatar` (required): The image file representing the new avatar for the user. The file should be in JPG or PNG format, and the size should not exceed 5MB.
+
+##### Response
+
+The server will respond with a JSON object containing the following fields:
+
+- `success`: A boolean indicating whether the operation was successful.
+- `message`: A message describing the result of the operation.
+
+##### Example
+
+```
+PATCH /users/avatars HTTP/1.1
+Host: example.com
+Authorization: Bearer <access_token>
+Content-Type: multipart/form-data; boundary=--------------------------1234567890
+
+----------------------------1234567890
+Content-Disposition: form-data; name="avatar"; filename="avatar.png"
+Content-Type: image/png
+
+<Binary data of the image file>
+----------------------------1234567890--
+```
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "success": true,
+  "message": "Avatar updated successfully"
+}
+```
+
+Note: After uploading, the server will save the avatar as a temporary file, then resize it to 250x250, and finally save it to the `public` folder. The temporary file will be removed automatically. If the user had a previous avatar, it will be replaced by the new one.
+
 ## Authentication
 
 This API uses token-based authentication to secure its endpoints. To access the protected endpoints, clients must first authenticate by sending an authentication token along with the request. The API supports two ways to authenticate:
