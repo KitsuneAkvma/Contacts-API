@@ -1,14 +1,18 @@
 import express from "express";
+import multer from "multer";
+
 import {
   login,
   logout,
   signUp,
+  updateAvatar,
   updateSubscription,
 } from "../../services/users.js";
-
-import { authentication } from "../../services/middleware.js";
+import { authentication, storage } from "../../services/middleware.js";
 
 const router = express.Router();
+
+const upload = multer({ storage });
 
 router.post("/signup", async (req, res, next) => {
   try {
@@ -42,7 +46,7 @@ router.post("/logout", authentication, async (req, res, next) => {
   try {
     const user = req.user;
     const token = req.token;
-    !token && res.status(401).json({ message: "Unauthorized" });
+    !token && res.status(401).send({ message: "Unauthorized" });
     const authorization = await logout(user, token);
 
     req.cookies?.token && res.clearCookie("token");
@@ -86,5 +90,22 @@ router.patch("/", authentication, async (req, res, next) => {
     next(error);
   }
 });
+
+router.patch(
+  "/avatars",
+  authentication,
+  upload.single("avatar"),
+  async (req, res, next) => {
+    try {
+      const { user, file } = req;
+      !file && res.status(400).json({ message: "Please provide avatar" });
+
+      const updatedUser = await updateAvatar(user, file);
+      res.status(updatedUser.statusCode || 200).json(updatedUser);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;

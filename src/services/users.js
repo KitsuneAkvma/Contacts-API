@@ -1,7 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
+import path from "node:path";
+import fs from "fs";
 
 import { User } from "../models/models.js";
+import { deleteFile, processAvatar } from "./middleware.js";
 
 const signUp = async (body) => {
   try {
@@ -27,7 +31,11 @@ const signUp = async (body) => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const newUser = new User({ email, password: passwordHash });
+    const newUser = new User({
+      email,
+      password: passwordHash,
+      avatarURL: gravatar.profile_url(email),
+    });
     await newUser.save();
 
     return {
@@ -99,7 +107,7 @@ const logout = async (user, token) => {
     if (!userToLogout) {
       return {
         statusCode: 401,
-        message: "Not authorized",
+        message: "Unauthorized",
       };
     }
     return { statusCode: 200, message: "Successfully logged out" };
@@ -138,4 +146,34 @@ const updateSubscription = async (user, subscription) => {
     };
   }
 };
-export { signUp, login, logout, updateSubscription };
+
+const updateAvatar = async (user, file) => {
+  try {
+    const avatarPath = path.normalize(`public/avatars/${file.filename}`);
+    processAvatar(file, avatarPath);
+
+    const previousAvatarURL = user.avatarURL;
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        avatarURL: avatarPath,
+      },
+      { new: true }
+    );
+    if (previousAvatarURL && fs.existsSync(previousAvatarURL)) {
+      deleteFile(previousAvatarURL);
+    }
+    return {
+      statusCode: 202,
+      message: "Successfully updated avatar",
+      avatarURL: avatarPath,
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      message: "Error updating avatar",
+      error: error.message,
+    };
+  }
+};
+export { signUp, login, logout, updateSubscription, updateAvatar };

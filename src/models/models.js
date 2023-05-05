@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const { Schema } = mongoose;
 
 const contactSchema = new Schema({
@@ -28,6 +29,9 @@ const contactSchema = new Schema({
     ref: "user",
     required: true,
   },
+  avatarURL: {
+    type: String,
+  },
 });
 contactSchema.index({ name: 1, owner: 1 }, { unique: true });
 
@@ -55,9 +59,13 @@ const userSchema = new Schema({
     type: String,
     default: null,
   },
+  avatarURL: {
+    type: String,
+  },
 });
 
 const Contact = mongoose.model("Contact", contactSchema);
 const User = mongoose.model("User", userSchema);
 
 export { Contact, User };
+
