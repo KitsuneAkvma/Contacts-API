@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
 import path from "node:path";
+import fs from "fs";
 
 import { User } from "../models/models.js";
 import { deleteFile, processAvatar } from "./middleware.js";
@@ -148,8 +149,9 @@ const updateSubscription = async (user, subscription) => {
 
 const updateAvatar = async (user, file) => {
   try {
-    const avatarPath = path.normalize(`./public/avatars/${file.filename}`);
+    const avatarPath = path.normalize(`public/avatars/${file.filename}`);
     processAvatar(file, avatarPath);
+
     const previousAvatarURL = user.avatarURL;
     await User.findByIdAndUpdate(
       user._id,
@@ -158,7 +160,7 @@ const updateAvatar = async (user, file) => {
       },
       { new: true }
     );
-    if (previousAvatarURL) {
+    if (previousAvatarURL && fs.existsSync(previousAvatarURL)) {
       deleteFile(previousAvatarURL);
     }
     return {

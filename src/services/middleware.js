@@ -5,6 +5,7 @@ import Jimp from "jimp";
 import fs from "fs";
 import clc from "cli-color";
 
+
 import { User } from "../models/models.js";
 
 const authentication = async (req, res, next) => {
@@ -66,15 +67,16 @@ const storage = multer.diskStorage({
 });
 
 const processAvatar = (file, filepath) => {
-  Jimp.read(file.path)
-    .then((image) => {
+
+  try {
+    Jimp.read(file.path).then((image) => {
       image.resize(250, 250).write(filepath);
       deleteFile(file.path);
       return filepath;
-    })
-    .catch((error) => {
-      return { statusCode: 500, message: error.message };
     });
+  } catch (error) {
+    return { statusCode: 500, message: error.message };
+  }
 };
 
 export { authentication, deleteFile, storage, processAvatar };

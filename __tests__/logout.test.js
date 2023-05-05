@@ -10,7 +10,7 @@ import app from "../src/app.js";
 describe("logout route", () => {
   const testUser = {
     email: "logouttest@example.com",
-    password: "Testpassword1",
+    password: "TestPassword1",
   };
 
   beforeAll(async () => {
