@@ -1,16 +1,18 @@
 import request from "supertest";
 
-
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import sgMail from "@sendgrid/mail";
 
 import { User } from "../src/models/models.js";
 import app from "../src/app.js";
+import { nanoid } from "nanoid";
 
 describe("signup route", () => {
   const testUser = {
     email: "signuptest@example.com",
     password: "Testpassword1",
+    verificationToken: nanoid(),
   };
 
   beforeAll(async () => {
@@ -20,6 +22,7 @@ describe("signup route", () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   });
 
   afterEach(async () => {
@@ -34,7 +37,7 @@ describe("signup route", () => {
   });
 
   it("returns a 400 status code and an error message if the email is already taken", async () => {
-    await User.create(testUser);
+    await User.create(new User({ ...testUser }));
 
     const response = await request(app)
       .post("/api/users/signup")

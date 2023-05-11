@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const { Schema } = mongoose;
 
 const contactSchema = new Schema({
@@ -62,10 +61,17 @@ const userSchema = new Schema({
   avatarURL: {
     type: String,
   },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: {
+    type: String,
+    required: [true, "Verify token is required"],
+  },
 });
 
 const Contact = mongoose.model("Contact", contactSchema);
 const User = mongoose.model("User", userSchema);
 
 export { Contact, User };
-

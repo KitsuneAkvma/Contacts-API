@@ -16,6 +16,7 @@ Welcome to the Contacts API! This API provides various endpoints to manage your 
     - [`DELETE /contacts/:contactId`](#delete-contactscontactid)
   - [Users](#users)
     - [`POST /users/signup`](#post-userssignup)
+    - [`POST /users/verify`](#post-usersverify)
     - [`POST /users/login`](#post-userslogin)
     - [`POST /users/logout`](#post-userslogout)
     - [`GET /users/current`](#get-userscurrent)
@@ -132,6 +133,22 @@ Creates a new user account. The request body should be a JSON object containing 
 - `email` (required): The email address of the user.
 - `password` (required): The password for the user.
 
+Verification email will be send at provided email address when user is created successfully.
+
+#### `POST /users/verify`
+
+This route allows users to resend the email verification link to their email address. If the user is not yet verified, the verification email containing a unique token will be sent to the user's inbox.
+
+- `email` (required): The email address of the user.
+
+**Response**:
+
+- Success (200 OK): Email sent successfully.
+  - Message: "Email sent to your inbox! Please check other categories as well your spam folder!"
+- Error (400 Bad Request):
+  - User already verified: Message: "Already verified!"
+  - User not found: Message: "User not found"
+
 #### `POST /users/login`
 
 Logs in a user and returns an authentication token. The request body should be a JSON object containing the following fields:
@@ -157,20 +174,20 @@ Updates the current user's subscription. The request body should be a JSON objec
 
 Updates the current user's avatar. This endpoint requires authentication.
 
-##### Request Body
+**Request Body**
 
 The request body should be a `multipart/form-data` containing the following field:
 
 - `avatar` (required): The image file representing the new avatar for the user. The file should be in JPG or PNG format, and the size should not exceed 5MB.
 
-##### Response
+**Response**
 
 The server will respond with a JSON object containing the following fields:
 
 - `success`: A boolean indicating whether the operation was successful.
 - `message`: A message describing the result of the operation.
 
-##### Example
+**Example**
 
 ```
 PATCH /users/avatars HTTP/1.1
