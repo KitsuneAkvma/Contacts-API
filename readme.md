@@ -4,28 +4,38 @@ Welcome to the Contacts API! This API provides various endpoints to manage your 
 
 ## Navigation
 
-- [Installation](#installation)
-- [Getting Started](#getting-started)
-- [Endpoints](#endpoints)
-  - [Contacts](#contacts)
-    - [`GET /contacts`](#get-contacts)
-    - [`GET /contacts/:contactId`](#get-contactscontactid)
-    - [`POST /contacts`](#post-contacts)
-    - [`PUT /contacts/:contactId`](#put-contactscontactid)
-    - [`PATCH /contacts/:contactId`](#patch-contactscontactid)
-    - [`DELETE /contacts/:contactId`](#delete-contactscontactid)
-  - [Users](#users)
-    - [`POST /users/signup`](#post-userssignup)
-    - [`POST /users/verify`](#post-usersverify)
-    - [`POST /users/login`](#post-userslogin)
-    - [`POST /users/logout`](#post-userslogout)
-    - [`GET /users/current`](#get-userscurrent)
-    - [`PATCH /users`](#patch-users)
-- [Authentication](#authentication)
-  - [Via HTTP Cookie](#via-http-cookie)
-  - [Via HTTP Header](#via-http-header)
-- [Query Parameters](#query-parameters)
-- [Error Handling](#error-handling)
+- [Contacts API](#contacts-api)
+  - [Navigation](#navigation)
+  - [Installation](#installation)
+  - [Getting started](#getting-started)
+  - [Endpoints](#endpoints)
+    - [Contacts](#contacts)
+      - [`GET /contacts`](#get-contacts)
+      - [`GET /contacts/:contactId`](#get-contactscontactid)
+      - [`POST /contacts`](#post-contacts)
+      - [`PUT /contacts/:contactId`](#put-contactscontactid)
+      - [`PATCH /contacts/:contactId`](#patch-contactscontactid)
+      - [`DELETE /contacts/:contactId`](#delete-contactscontactid)
+    - [Users](#users)
+      - [`POST /users/signup`](#post-userssignup)
+      - [`POST /users/verify`](#post-usersverify)
+      - [`POST /users/login`](#post-userslogin)
+      - [`POST /users/logout`](#post-userslogout)
+      - [`GET /users/current`](#get-userscurrent)
+      - [`PATCH /users`](#patch-users)
+      - [`PATCH /users/avatars`](#patch-usersavatars)
+  - [Authentication](#authentication)
+    - [Via HTTP Cookie](#via-http-cookie)
+    - [Via HTTP Header](#via-http-header)
+  - [Query Parameters](#query-parameters)
+  - [Error handling](#error-handling)
+- [Docker](#docker)
+    - [1. Pull the Docker Image](#1-pull-the-docker-image)
+    - [2. Provide Environment Variables](#2-provide-environment-variables)
+    - [3. Run the Docker Container](#3-run-the-docker-container)
+    - [4. Access the Contacts API](#4-access-the-contacts-api)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Installation
 
@@ -248,10 +258,57 @@ The API allows clients to provide additional parameters as part of the query str
 
 When an error occurs, the API will return a JSON response with an `error` field containing a description of the error. The response will also include a status code indicating the type of error that occurred.
 
-## Contributing
+
+# Docker
+
+
+
+### 1. Pull the Docker Image
+
+First, pull the pre-built Docker image from the container registry. Open your terminal and run the following command:
+
+```bash
+docker pull akvma/contacts-api
+```
+
+
+### 2. Provide Environment Variables
+
+Before running the Docker container, make sure to have the necessary environment variables ready. The Contacts API requires the following environment variables to be set:
+
+- `DB_URI`: Your MongoDB URI
+- `JWT_SECRET`: Your JWT secret key
+- `SENDGRID_API_KEY`: Your SendGrid API key
+
+### 3. Run the Docker Container
+
+Once you have the environment variables, you can start the Contacts API by running the Docker container. Use the following command:
+
+```bash
+docker run -p 8080:8080 -e DB_URI=<your_mongodb_uri> -e JWT_SECRET=<your_jwt_secret> -e SENDGRID_API_KEY=<your_sendgrid_api_key> your-username/contacts-api:latest
+```
+
+Replace `your-username` with your Docker Hub username, and `<your_mongodb_uri>`, `<your_jwt_secret>`, and `<your_sendgrid_api_key>` with the actual values for your MongoDB URI, JWT secret, and SendGrid API key.
+
+
+For example :
+```bash
+docker run -p 8080:8080 -e DB_URI="mongodb+srv://username:exampleexampleexample" -e JWT_SECRET="oijd289@&hdak2u2" -e SENDGRID_API_KEY=<your_sendgrid_api_key> your-username/contacts-api:latest
+```
+### 4. Access the Contacts API
+
+The Contacts API should now be running inside the Docker container. You can access it by making HTTP requests to `http://localhost:8080` in your web browser or using tools like cURL or Postman.
+
+That's it! You have successfully deployed and run the Contacts API using Docker.
+
+Note: Make sure you have Docker installed and running on your machine before following these instructions.
+
+If you encounter any issues or have further questions, please feel free to ask.
+
+# Contributing
 
 Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request.
 
-## License
+# License
 
 This API is licensed under the MIT License. See the `LICENSE` file for more information.
