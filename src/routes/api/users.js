@@ -4,11 +4,13 @@ import multer from "multer";
 import {
   login,
   logout,
+  sendVerificationEmail,
   signUp,
   updateAvatar,
   updateSubscription,
 } from "../../services/users.js";
 import { authentication, storage } from "../../services/middleware.js";
+import { User } from "../../models/models.js";
 
 const router = express.Router();
 
@@ -91,6 +93,7 @@ router.patch("/", authentication, async (req, res, next) => {
   }
 });
 
+// Update user avatar
 router.patch(
   "/avatars",
   authentication,
@@ -107,5 +110,49 @@ router.patch(
     }
   }
 );
+// email verification
+router.get("/verify/:verificationToken", async (req, res, next) => {
+  try {
+    const { verificationToken } = req.params;
+    const user = await User.findOneAndUpdate(
+      { verificationToken },
+      {
+        verificationToken: null,
+        verify: true,
+      },
+      { new: true }
+    );
+    console.log({ verificationToken, user });
+    user
+      ? res.status(200).json({ message: "Verification successful" })
+      : res.status(400).json({ message: "User not found" });
+  } catch (error) {
+    next(error);
+  }
+});
+// Resend email verification
+router.post("/verify", async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (user) {
+      const isVerified = user.verify;
 
+      if (!isVerified) {
+        const verificationToken = user.verificationToken;
+        await sendVerificationEmail(verificationToken, email);
+        res.status(200).json({
+          message:
+            "Email sent to your inbox! Please check other categories as well your spam folder !",
+        });
+      } else {
+        res.status(400).json({ message: "Already verified!" });
+      }
+    } else {
+      res.status(400).json({ message: "User not found" });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 export default router;

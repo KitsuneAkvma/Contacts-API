@@ -6,11 +6,13 @@ import dotenv from "dotenv";
 
 import { User } from "../src/models/models.js";
 import app from "../src/app.js";
+import { nanoid } from "nanoid";
 
 describe("logout route", () => {
   const testUser = {
     email: "logouttest@example.com",
     password: "TestPassword1",
+    verificationToken: nanoid(),
   };
 
   beforeAll(async () => {
@@ -23,10 +25,13 @@ describe("logout route", () => {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(testUser.password, salt);
 
-    await User.create({
-      email: testUser.email,
-      password: hashedPassword,
-    });
+    await User.create(
+      new User({
+        email: testUser.email,
+        password: hashedPassword,
+        verificationToken: testUser.verificationToken,
+      })
+    );
   });
   afterAll(async () => {
     await User.deleteOne({ email: testUser.email });
@@ -52,23 +57,18 @@ describe("logout route", () => {
   });
 
   it("clears the 'token' cookie if the user is logged in", async () => {
-   
     const agent = request.agent(app);
     const response = await agent.post("/api/users/login").send(testUser);
 
-   
     const token = response.cookies?.token;
 
-    
     const res = await agent
       .post("/api/users/logout")
       .set("Cookie", `token=${token}`)
       .send();
 
-   
     expect(res.statusCode).toBe(200);
 
-   
     expect(res.headers["set-cookie"]).toContain(
       "token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
     );

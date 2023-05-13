@@ -2,6 +2,7 @@ import app from "./src/app.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import clc from "cli-color";
+import sgMail from "@sendgrid/mail";
 
 dotenv.config();
 
@@ -26,6 +27,8 @@ mongoose
   .catch((err) => {
     console.error(clc.red.bold("Error connecting to MongoDB:"), err);
   });
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const shutdown = () => {
   console.log(

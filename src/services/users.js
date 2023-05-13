@@ -1,15 +1,19 @@
 import bcrypt from "bcryptjs";
+
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
 import path from "node:path";
 import fs from "fs";
+import sgMail from "@sendgrid/mail";
 
 import { User } from "../models/models.js";
 import { deleteFile, processAvatar } from "./middleware.js";
+import { nanoid } from "nanoid";
 
 const signUp = async (body) => {
   try {
     const { email, password } = body;
+    const verificationToken = nanoid();
 
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -30,17 +34,22 @@ const signUp = async (body) => {
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
-
+    // email verification
+    await sendVerificationEmail(verificationToken, email);
+    // Save new User to DB
     const newUser = new User({
       email,
       password: passwordHash,
       avatarURL: gravatar.profile_url(email),
+      verificationToken,
     });
     await newUser.save();
 
     return {
       statusCode: 201,
       message: "Successfully created an account",
+      verificationMessage:
+        "Verification email sent to your email! Please verify your account by clicking  the link in the email. Please check your email!",
       user: { email, subscription: newUser.subscription },
     };
   } catch (error) {
@@ -176,4 +185,33 @@ const updateAvatar = async (user, file) => {
     };
   }
 };
-export { signUp, login, logout, updateSubscription, updateAvatar };
+
+async function sendVerificationEmail(token, email) {
+  const nameFromEmail = email.slice(0, email.indexOf("@"));
+  const msg = {
+    to: email,
+    from: "mateusz.r.martin@gmail.com",
+    subject: "Email verification",
+    text: `Hello ${nameFromEmail}!,`,
+    html: `<p>Hello ${nameFromEmail}!,</p></br><p>Please click in link bellow to verify your account!</p></br>
+  <a href="http://localhost:3000/api/users/verify/${token}">Click here </a>`,
+  };
+
+  await sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent to", email);
+    })
+    .catch((error) => {
+      console.error(error);
+      throw new Error(error);
+    });
+}
+export {
+  signUp,
+  login,
+  logout,
+  updateSubscription,
+  updateAvatar,
+  sendVerificationEmail,
+};

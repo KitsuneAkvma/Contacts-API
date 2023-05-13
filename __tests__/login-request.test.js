@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 
 import { User } from "../src/models/models.js";
 import app from "../src/app.js";
+import { nanoid } from "nanoid";
 
 describe("login function", () => {
   const testUser = {
@@ -24,10 +25,13 @@ describe("login function", () => {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(testUser.password, salt);
 
-    await User.create({
-      email: testUser.email,
-      password: hashedPassword,
-    });
+    await User.create(
+      new User({
+        email: testUser.email,
+        password: hashedPassword,
+        verificationToken: nanoid(),
+      })
+    );
   });
 
   afterAll(async () => {
